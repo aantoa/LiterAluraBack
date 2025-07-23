@@ -9,4 +9,9 @@ public record DatosAutor(
         @JsonAlias("birth_year") Integer anioNacimiento,
         @JsonAlias("death_year") Integer anioFallecimiento
 ) {
+    @Override
+    public String toString() {
+        return nombre + (anioNacimiento != null ? " (" + anioNacimiento : "") +
+                (anioFallecimiento != null ? " - " + anioFallecimiento + ")" : "");
+    }
 }
