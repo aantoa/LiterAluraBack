@@ -31,6 +31,10 @@ public class Principal {
                     4 - 👩‍🎓 Listar autores
                     5 - 🏆 Listar autores vivos en determinado año
                     
+                    ------------- 📈 Estadísticas 📈 -------------
+                    
+                    6 - 📈 Ver estadísticas de libros por idioma
+                    
                     0 - ❌ Salir
                     ══════════════════════════════════════════════
                     """;
@@ -57,6 +61,9 @@ public class Principal {
                     break;
                 case 5:
                     listarAutoresVivosEnAno();
+                    break;
+                case 6:
+                    libroService.mostrarEstadisticasIdiomas();
                     break;
                 case 0:
                     System.out.println("Cerrando la aplicación... 👋");

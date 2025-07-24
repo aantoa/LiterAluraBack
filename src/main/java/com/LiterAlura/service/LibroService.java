@@ -83,4 +83,17 @@ public class LibroService {
                 .collect(Collectors.toList());
     }
 
+    public void mostrarEstadisticasIdiomas() {
+        long totalLibros = libroRepository.count();
+        if (totalLibros == 0) {
+            System.out.println("📚 No hay libros registrados en el catálogo todavía.");
+            return;
+        }
+        long cantidadEs = libroRepository.countByIdiomaIgnoreCase("es");
+        long cantidadEn = libroRepository.countByIdiomaIgnoreCase("en");
+        System.out.println("📊 Estadísticas de libros por idioma en el catálogo:");
+        System.out.printf(" - Libros en español (es): %d%n", cantidadEs);
+        System.out.printf(" - Libros en inglés (en): %d%n", cantidadEn);
+    }
+
 }
