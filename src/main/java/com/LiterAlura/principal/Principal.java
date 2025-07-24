@@ -1,22 +1,22 @@
 package com.LiterAlura.principal;
 
-import com.LiterAlura.model.DatosAutor;
-import com.LiterAlura.model.DatosCatalogoLibros;
-import com.LiterAlura.model.DatosLibro;
-import com.LiterAlura.service.ConsumoAPI;
-import com.LiterAlura.service.ConvierteDatos;
+import com.LiterAlura.dto.AutorDTO;
+import com.LiterAlura.dto.LibroDTO;
+import com.LiterAlura.service.AutorService;
+import com.LiterAlura.service.LibroService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 
 @Component
 public class Principal {
-    private static final String URL_BASE = "https://gutendex.com/books/";
-    private ConsumoAPI consumoApi = new ConsumoAPI();
-    private ConvierteDatos conversor = new ConvierteDatos();
+
+    @Autowired
+    private LibroService libroService;
+    @Autowired
+    private AutorService autorService;
     private Scanner teclado = new Scanner(System.in);
-    private List<DatosLibro> datosLibros = new ArrayList<>();
-    private List<DatosAutor> autoresGuardados = new ArrayList<>();
 
     public void mostrarMenu() {
         var opcion = -1;
@@ -69,64 +69,26 @@ public class Principal {
 
     }
 
-    private List<DatosLibro> getDatosLibro(){
+    private void buscarLibros() {
         System.out.print("Escribe el título del libro que deseas buscar: ");
         String busqueda = teclado.nextLine();
-
-        String url = URL_BASE+ "?search=" + busqueda.replace(" ", "+");
-        String json = consumoApi.obtenerDatos(url);
-
-        DatosCatalogoLibros catalogo = conversor.obtenerDatos(json, DatosCatalogoLibros.class);
-        return catalogo.libros();
-    }
-
-    private void buscarLibros() {
-        List<DatosLibro> libros = getDatosLibro();
-        if (libros.isEmpty()) {
-            System.out.println("No se encontraron libros.");
-        } else {
-            DatosLibro libro = libros.get(0);
-            boolean yaExiste = datosLibros.stream()
-                    .anyMatch(l -> l.id() == libro.id());
-            if (yaExiste) {
-                System.out.println("⚠️  Ese libro ya está registrado en tu catálogo.");
-            } else {
-                datosLibros.add(libro);
-                System.out.println("Libro guardado: ");
-                System.out.println(libro);
-
-                DatosAutor autor = libro.autores() != null && !libro.autores().isEmpty()
-                        ? libro.autores().get(0)
-                        : null;
-
-                if (autor != null && autoresGuardados.stream().
-                        noneMatch(a -> a.nombre().equalsIgnoreCase(autor.nombre()))) {
-                    autoresGuardados.add(autor);
-                }
-            }
-        }
+        libroService.buscarYGuardarLibro(busqueda);
     }
 
 
     private void listarTodosLosLibros() {
-        if (datosLibros.isEmpty()) {
+        List<LibroDTO> libros = libroService.listarTodos();
+        if (libros.isEmpty()) {
             System.out.println("No hay libros en el catálogo.");
         } else {
-            datosLibros.stream()
-                    .sorted(Comparator.comparing(DatosLibro::titulo))
-                    .forEach(System.out::println);
+            libros.forEach(System.out::println);
         }
     }
 
     private void listarLibrosPorIdioma() {
         System.out.print("Ingrese el idioma a filtrar (ej: en, es): ");
         String idioma = teclado.nextLine().toLowerCase();
-
-        List<DatosLibro> librosFiltrados = datosLibros.stream()
-                .filter(libro -> libro.idiomas() != null && !libro.idiomas().isEmpty())
-                .filter(libro -> libro.idiomas().get(0).equalsIgnoreCase(idioma))
-                .toList();
-
+        List<LibroDTO> librosFiltrados = libroService.listarPorIdioma(idioma);
         if (librosFiltrados.isEmpty()) {
             System.out.println("No hay libros en ese idioma.");
         } else {
@@ -135,12 +97,11 @@ public class Principal {
     }
 
     private void listarAutores() {
-        if (autoresGuardados.isEmpty()) {
+        List<AutorDTO> autores = autorService.listarTodos();
+        if (autores.isEmpty()) {
             System.out.println("No hay autores guardados.");
         } else {
-            autoresGuardados.stream()
-                    .sorted(Comparator.comparing(DatosAutor::nombre, String.CASE_INSENSITIVE_ORDER))
-                    .forEach(System.out::println);
+            autores.forEach(System.out::println);
         }
     }
 
@@ -148,14 +109,7 @@ public class Principal {
         System.out.print("Ingrese el año a consultar: ");
         int ano = Integer.parseInt(teclado.nextLine());
 
-        List<DatosAutor> vivos = autoresGuardados.stream()
-                .filter(autor ->
-                        autor.anioNacimiento() != null && autor.anioNacimiento() <= ano &&
-                                (autor.anioFallecimiento() == null || autor.anioFallecimiento() > ano)
-                )
-                .sorted(Comparator.comparing(DatosAutor::nombre, String.CASE_INSENSITIVE_ORDER))
-                .toList();
-
+        List<AutorDTO> vivos = autorService.listarVivosEnAno(ano);
         if (vivos.isEmpty()) {
             System.out.println("No hay autores vivos en ese año.");
         } else {
