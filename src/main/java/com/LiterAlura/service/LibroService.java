@@ -91,6 +91,9 @@ public class LibroService {
         }
         long cantidadEs = libroRepository.countByIdiomaIgnoreCase("es");
         long cantidadEn = libroRepository.countByIdiomaIgnoreCase("en");
+        System.out.println("\u001B[33m**********************************************\u001B[0m");
+        System.out.printf("📚 Total de libros registrados: %d%n", totalLibros);
+        System.out.println("\u001B[33m**********************************************\u001B[0m");
         System.out.println("📊 Estadísticas de libros por idioma en el catálogo:");
         System.out.printf(" - Libros en español (es): %d%n", cantidadEs);
         System.out.printf(" - Libros en inglés (en): %d%n", cantidadEn);
