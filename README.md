@@ -7,7 +7,7 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?logo=postgresql)](https://www.postgresql.org/)
 
 
-LiterAlura es una aplicación de consola en Java + Spring Boot que te permite consultar, almacenar y explorar información de libros y autores usando la API pública de Gutendex, y persistir datos en PostgreSQL. Desarrollado como parte del programa Oracle ONE - Alura Latam.
+LiterAlura es una aplicación en Java + Spring Boot que te permite consultar, almacenar y explorar información de libros y autores usando la API pública de Gutendex, y persistir datos en PostgreSQL. Desarrollado como parte del programa Oracle ONE - Alura Latam.
 
 ---
 ## 🚀 Funcionalidades principales
@@ -26,10 +26,10 @@ LiterAlura es una aplicación de consola en Java + Spring Boot que te permite co
 
 ## 💡 ¿Cómo funciona?
 
-El usuario interactúa con un menú amigable en consola, pudiendo buscar libros, consultar autores, ver estadísticas y filtrar resultados.
+
 
 ### Menú real en consola:
-![Menú de LiterAlura](img.png)
+
 
 ---
 
@@ -49,6 +49,10 @@ El usuario interactúa con un menú amigable en consola, pudiendo buscar libros,
 
 ```text
 src/main/java/com/literalura/
+├── controller/
+│     ├── AutorController.java
+│     ├── EstadisticasController.java
+│     └── LibroController.java
 ├── dto/
 │     ├── AutorDTO.java
 │     └── LibroDTO.java
@@ -63,11 +67,12 @@ src/main/java/com/literalura/
 │     └── LibroRepository.java
 ├── service/
 │     ├── AutorService.java
-│     ├── LibroService.java
+│     └── LibroService.java
+├── utils/
 │     ├── ConsumoAPI.java
-│     └── ConvierteDatos.java
-├── principal/
-│     └── Principal.java
+│     ├── ConvierteDatos.java
+│     ├── IConvierteDatos.java
+│     └── ListConvert.java
 └── LiterAluraApplication.java
 ```
 ---
@@ -76,7 +81,7 @@ src/main/java/com/literalura/
 
 1. **Clona el repositorio:**
 ```sh
-git clone https://github.com/tuusuario/LiterAlura.git
+git clone https://github.com/aantoa/LiterAluraBack.git
 cd LiterAlura
 ```
 2. **Crea la base de datos PostgreSQL (ejemplo):**
@@ -138,7 +143,6 @@ Encuentra autores vivos en un año específico, por nombre, año de nacimiento o
 
 ## 💬 Sobre el desarrollo
 - Este proyecto fue desarrollado como parte del Challenge de Back-End en el programa Oracle Next Education - Alura Latam.
-- El objetivo fue practicar integración de APIs, persistencia de datos, buenas prácticas en Java y Spring, y la entrega de una experiencia sólida al usuario.
 
 ---
 

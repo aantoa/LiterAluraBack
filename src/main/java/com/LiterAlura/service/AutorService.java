@@ -4,6 +4,7 @@ import com.LiterAlura.dto.AutorDTO;
 import com.LiterAlura.model.Autor;
 import com.LiterAlura.model.DatosAutor;
 import com.LiterAlura.repository.AutorRepository;
+import com.LiterAlura.utils.ListConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ public class AutorService {
     private AutorRepository autorRepository;
 
     public Autor buscarOCrearAutor(DatosAutor datosAutor) {
-        return autorRepository.findByNombre(datosAutor.nombre())
+        return autorRepository.findByNombreIgnoreCase(datosAutor.nombre())
                 .orElseGet(() -> {
                     Autor nuevo = new Autor();
                     nuevo.setNombre(datosAutor.nombre());
@@ -35,46 +36,24 @@ public class AutorService {
     }
 
     public List<AutorDTO> listarTodos() {
-        return autorRepository.findAll().stream()
-                .map(this::toDTO)
-                .collect(Collectors.toList());
-    }
-
-    /*public List<AutorDTO> listarVivosEnAno(int ano) {
-        return autorRepository.findAll().stream()
-                .filter(autor ->
-                        autor.getAnioNacimiento() != null && autor.getAnioNacimiento() <= ano &&
-                                (autor.getAnioFallecimiento() == null || autor.getAnioFallecimiento() > ano)
-                )
-                .map(this::toDTO)
-                .collect(Collectors.toList());
-    }
-    */
-    // Usando derived queries
-    public List<AutorDTO> listarVivosEnAno(int ano) {
-        List<Autor> vivos = autorRepository
-                .findByAnioNacimientoLessThanEqualAndAnioFallecimientoGreaterThanOrAnioFallecimientoIsNull(ano, ano);
-        return vivos.stream()
-                .map(this::toDTO)
-                .collect(Collectors.toList());
+        return ListConverter.convertirLista(autorRepository.findAll(), this::toDTO);
     }
 
     public List<AutorDTO> buscarPorNombre(String nombre) {
-        return autorRepository.findByNombreContainingIgnoreCase(nombre).stream()
-                .map(this::toDTO)
-                .collect(Collectors.toList());
+        return ListConverter.convertirLista(autorRepository.findByNombreContainingIgnoreCase(nombre), this::toDTO);
+    }
+
+    public List<AutorDTO> listarVivosEnAno(int anio) {
+        return ListConverter.convertirLista(autorRepository
+                .findByAnioNacimientoLessThanEqualAndAnioFallecimientoGreaterThanOrAnioFallecimientoIsNull(anio,anio), this::toDTO);
     }
 
     public List<AutorDTO> buscarNacidosDesde(int anio) {
-        return autorRepository.findByAnioNacimientoGreaterThanEqual(anio).stream()
-                .map(this::toDTO)
-                .collect(Collectors.toList());
+        return ListConverter.convertirLista(autorRepository.findByAnioNacimientoGreaterThanEqual(anio),this::toDTO);
     }
 
     public List<AutorDTO> buscarFallecidosHasta(int anio) {
-        return autorRepository.findByAnioFallecimientoLessThanEqual(anio).stream()
-                .map(this::toDTO)
-                .collect(Collectors.toList());
+        return ListConverter.convertirLista(autorRepository.findByAnioFallecimientoLessThanEqual(anio), this::toDTO);
     }
 
 }

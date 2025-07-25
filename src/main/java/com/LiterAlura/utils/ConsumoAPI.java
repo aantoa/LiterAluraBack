@@ -1,4 +1,4 @@
-package com.LiterAlura.service;
+package com.LiterAlura.utils;
 
 import org.springframework.stereotype.Component;
 

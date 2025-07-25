@@ -14,6 +14,7 @@ public class Libro {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "autor_id")
     private Autor autor;
+    private String temas;
     private String idioma;
     private Integer descargas;
 
@@ -42,6 +43,14 @@ public class Libro {
 
     public void setAutor(Autor autor) {
         this.autor = autor;
+    }
+
+    public String getTemas() {
+        return temas;
+    }
+
+    public void setTemas(String temas) {
+        this.temas = temas;
     }
 
     public String getIdioma() {
