@@ -88,6 +88,9 @@ public class Principal {
         if (libros.isEmpty()) {
             System.out.println("No hay libros en el catálogo.");
         } else {
+            System.out.println("\u001B[33m**********************************************\u001B[0m");
+            System.out.println("📚 Libros registrados: ");
+            System.out.println("\u001B[33m**********************************************\u001B[0m");
             libros.forEach(System.out::println);
         }
     }
@@ -99,6 +102,9 @@ public class Principal {
         if (librosFiltrados.isEmpty()) {
             System.out.println("No hay libros en ese idioma.");
         } else {
+            System.out.println("\u001B[33m**********************************************\u001B[0m");
+            System.out.printf("📚 Libros registrados en: %s%n", idioma.toUpperCase());
+            System.out.println("\u001B[33m**********************************************\u001B[0m");
             librosFiltrados.forEach(System.out::println);
         }
     }
@@ -108,18 +114,37 @@ public class Principal {
         if (autores.isEmpty()) {
             System.out.println("No hay autores guardados.");
         } else {
+            System.out.println("\u001B[33m**********************************************\u001B[0m");
+            System.out.println("👩‍🎓 Lista de autores: ");
+            System.out.println("\u001B[33m**********************************************\u001B[0m");
             autores.forEach(System.out::println);
         }
     }
 
     private void listarAutoresVivosEnAno() {
-        System.out.print("Ingrese el año a consultar: ");
-        int ano = Integer.parseInt(teclado.nextLine());
+        int ano = -1;
+        while (true) {
+            System.out.print("Ingrese el año a consultar: ");
+            String input = teclado.nextLine();
+            try {
+                ano = Integer.parseInt(input);
+                if (ano < 0 || ano > 2100) {
+                    System.out.println("Por favor, ingrese un año válido entre 0 y 2100.");
+                } else {
+                    break;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("El año debe ser un número entero. Intente de nuevo.");
+            }
+        }
 
         List<AutorDTO> vivos = autorService.listarVivosEnAno(ano);
         if (vivos.isEmpty()) {
             System.out.println("No hay autores vivos en ese año.");
         } else {
+            System.out.println("\u001B[33m**********************************************\u001B[0m");
+            System.out.println("👩‍🎓 Lista de autores: ");
+            System.out.println("\u001B[33m**********************************************\u001B[0m");
             vivos.forEach(System.out::println);
         }
     }

@@ -55,7 +55,9 @@ public class LibroService {
             libro.setDescargas(datosLibro.descargas());
             libro.setAutor(autor);
             libroRepository.save(libro);
-            System.out.println("Libro guardado:");
+            System.out.println("\u001B[33m**********************************************\u001B[0m");
+            System.out.println("📚 Libro registrado: ");
+            System.out.println("\u001B[33m**********************************************\u001B[0m");
             System.out.println(toDTO(libro));
         }
     }

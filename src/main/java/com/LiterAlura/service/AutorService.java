@@ -40,12 +40,21 @@ public class AutorService {
                 .collect(Collectors.toList());
     }
 
-    public List<AutorDTO> listarVivosEnAno(int ano) {
+    /*public List<AutorDTO> listarVivosEnAno(int ano) {
         return autorRepository.findAll().stream()
                 .filter(autor ->
                         autor.getAnioNacimiento() != null && autor.getAnioNacimiento() <= ano &&
                                 (autor.getAnioFallecimiento() == null || autor.getAnioFallecimiento() > ano)
                 )
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+    */
+    // Usando derived queries
+    public List<AutorDTO> listarVivosEnAno(int ano) {
+        List<Autor> vivos = autorRepository
+                .findByAnioNacimientoLessThanEqualAndAnioFallecimientoGreaterThanOrAnioFallecimientoIsNull(ano, ano);
+        return vivos.stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
