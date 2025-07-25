@@ -22,21 +22,29 @@ public class Principal {
         var opcion = -1;
         while (opcion != 0) {
             var menu = """
-                    ══════════════════════════════════════════════
+                    \u001B[36m══════════════════════════════════════════════
                              📚  Menú de LiterAlura  📚
-                    ══════════════════════════════════════════════
+                    ══════════════════════════════════════════════\u001B[0m
                     1 - 🔎 Buscar libro por titulo
                     2 - 📖 Listar todos los libros registrados
                     3 - 🌐 Listar libros por idioma
                     4 - 👩‍🎓 Listar autores
                     5 - 🏆 Listar autores vivos en determinado año
                     
-                    ------------- 📈 Estadísticas 📈 -------------
+                    \u001B[36m------------- 📈 Estadísticas 📈 -------------\u001B[0m
                     
                     6 - 📈 Ver estadísticas de libros por idioma
+                    7 - 📈 Ver estadísticas de descargas
+                    
+                    \u001B[36m-------------------- BONUS -------------------\u001B[0m
+                    
+                    8 - 🏆 Ver Top 10 libros más descargados
+                    9 - 🔍 Buscar autor por nombre
+                    10 - 👶 Listar autores nacidos desde un año
+                    11 - ⚰️  Listar autores fallecidos hasta un año
                     
                     0 - ❌ Salir
-                    ══════════════════════════════════════════════
+                    \u001B[36m══════════════════════════════════════════════\u001B[0m
                     """;
             System.out.println(menu);
             System.out.print("Elige una opción: ");
@@ -64,6 +72,21 @@ public class Principal {
                     break;
                 case 6:
                     libroService.mostrarEstadisticasIdiomas();
+                    break;
+                case 7:
+                    libroService.mostrarEstadisticasDescargas();
+                    break;
+                case 8:
+                    libroService.mostrarTop10MasDescragados();
+                    break;
+                case 9:
+                    buscarPorNombreDeAutor();
+                    break;
+                case 10:
+                    buscarAutoresNacidosEnAnio();
+                    break;
+                case 11:
+                    buscarAutoresFallecidosHastaAnio();
                     break;
                 case 0:
                     System.out.println("Cerrando la aplicación... 👋");
@@ -146,6 +169,58 @@ public class Principal {
             System.out.println("👩‍🎓 Lista de autores: ");
             System.out.println("\u001B[33m**********************************************\u001B[0m");
             vivos.forEach(System.out::println);
+        }
+    }
+
+    private void buscarPorNombreDeAutor(){
+        System.out.print("Ingrese nombre (o parte) del autor a buscar: ");
+        String nombre = teclado.nextLine();
+        List<AutorDTO> autores = autorService.buscarPorNombre(nombre);
+        if (autores.isEmpty()) {
+            System.out.println("No se encontró ningún autor con ese nombre.");
+        } else {
+            System.out.println("\u001B[35m**********************************************\u001B[0m");
+            System.out.printf("Autores que coinciden con: %s%n", nombre);
+            System.out.println("\u001B[35m**********************************************\u001B[0m");
+            autores.forEach(System.out::println);
+        }
+    }
+
+    private void buscarAutoresNacidosEnAnio(){
+        System.out.print("Ingrese el año mínimo de nacimiento: ");
+        String input = teclado.nextLine();
+        try {
+            int anio = Integer.parseInt(input);
+            List<AutorDTO> autores = autorService.buscarNacidosDesde(anio);
+            if (autores.isEmpty()) {
+                System.out.println("No se encontraron autores nacidos desde ese año.");
+            } else {
+                System.out.println("\u001B[35m**********************************************\u001B[0m");
+                System.out.printf("Autores nacidos desde el año %d:%n", anio);
+                System.out.println("\u001B[35m**********************************************\u001B[0m");
+                autores.forEach(System.out::println);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Por favor, ingrese un año válido (solo números).");
+        }
+    }
+
+    private void buscarAutoresFallecidosHastaAnio(){
+        System.out.print("Ingrese el año máximo de fallecimiento: ");
+        String input = teclado.nextLine();
+        try {
+            int anio = Integer.parseInt(input);
+            List<AutorDTO> autores = autorService.buscarFallecidosHasta(anio);
+            if (autores.isEmpty()) {
+                System.out.println("No se encontraron autores fallecidos hasta ese año.");
+            } else {
+                System.out.println("\u001B[35m**********************************************\u001B[0m");
+                System.out.printf("Autores fallecidos hasta el año %d:%n", anio);
+                System.out.println("\u001B[35m**********************************************\u001B[0m");
+                autores.forEach(System.out::println);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Por favor, ingrese un año válido (solo números).");
         }
     }
 

@@ -7,6 +7,7 @@ import com.LiterAlura.repository.LibroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -93,12 +94,52 @@ public class LibroService {
         }
         long cantidadEs = libroRepository.countByIdiomaIgnoreCase("es");
         long cantidadEn = libroRepository.countByIdiomaIgnoreCase("en");
-        System.out.println("\u001B[33m**********************************************\u001B[0m");
+        System.out.println("\u001B[34m**********************************************\u001B[0m");
         System.out.printf("📚 Total de libros registrados: %d%n", totalLibros);
-        System.out.println("\u001B[33m**********************************************\u001B[0m");
+        System.out.println("\u001B[34m**********************************************\u001B[0m");
         System.out.println("📊 Estadísticas de libros por idioma en el catálogo:");
         System.out.printf(" - Libros en español (es): %d%n", cantidadEs);
         System.out.printf(" - Libros en inglés (en): %d%n", cantidadEn);
+        System.out.println("\u001B[34m**********************************************\u001B[0m");
+    }
+
+    public void mostrarEstadisticasDescargas() {
+        List<Libro> libros = libroRepository.findAll();
+
+        if (libros.isEmpty()) {
+            System.out.println("📚 No hay libros registrados, por lo tanto no hay estadísticas de descargas.");
+            return;
+        }
+
+        DoubleSummaryStatistics stats = libros.stream()
+                .mapToDouble(libro -> libro.getDescargas() != null ? libro.getDescargas() : 0)
+                .summaryStatistics();
+
+        System.out.println("\u001B[34m**********************************************\u001B[0m");
+        System.out.println("📈 Estadísticas de descargas en el catálogo:");
+        System.out.println("\u001B[34m**********************************************\u001B[0m");
+        System.out.printf(" - Total descargas: %.0f%n", stats.getSum());
+        System.out.printf(" - Promedio descargas: %.2f%n", stats.getAverage());
+        System.out.printf(" - Máx descargas: %.0f%n", stats.getMax());
+        System.out.printf(" - Mín descargas: %.0f%n", stats.getMin());
+        System.out.println("\u001B[34m**********************************************\u001B[0m");
+    }
+
+    public void mostrarTop10MasDescragados(){
+        List<Libro> top10 = libroRepository.findTop10ByOrderByDescargasDesc();
+        if (top10.isEmpty()) {
+            System.out.println("📚 No hay libros registrados para mostrar el ranking.");
+            return;
+        }
+
+        System.out.println("\u001B[35m**********************************************\u001B[0m");
+        System.out.println("🏆 Top 10 libros más descargados:");
+        System.out.println("\u001B[35m**********************************************\u001B[0m");
+
+        top10.stream()
+                .map(this::toDTO)
+                .forEach(System.out::println);
+
     }
 
 }

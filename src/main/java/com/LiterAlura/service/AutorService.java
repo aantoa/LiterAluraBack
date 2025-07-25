@@ -59,4 +59,22 @@ public class AutorService {
                 .collect(Collectors.toList());
     }
 
+    public List<AutorDTO> buscarPorNombre(String nombre) {
+        return autorRepository.findByNombreContainingIgnoreCase(nombre).stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<AutorDTO> buscarNacidosDesde(int anio) {
+        return autorRepository.findByAnioNacimientoGreaterThanEqual(anio).stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<AutorDTO> buscarFallecidosHasta(int anio) {
+        return autorRepository.findByAnioFallecimientoLessThanEqual(anio).stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
 }
