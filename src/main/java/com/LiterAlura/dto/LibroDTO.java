@@ -5,7 +5,8 @@ public record LibroDTO(
         String titulo,
         String autor,
         String idioma,
-        Integer descargas
+        Integer descargas,
+        String imagenUrl
 ) {
     @Override
     public String toString() {

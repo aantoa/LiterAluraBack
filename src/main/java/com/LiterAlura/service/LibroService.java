@@ -36,13 +36,16 @@ public class LibroService {
         if (datosLibros == null || datosLibros.isEmpty()) {
             return Collections.emptyList();
         }
-        List<LibroDTO> resultado = new ArrayList<>();
-        for (DatosLibro datosLibro : datosLibros) {
-            Autor autor = autorService.buscarOCrearAutor(datosLibro.autores().get(0));
-            Libro libro = guardarLibroSiNoExiste(datosLibro, autor);
-            resultado.add(toDTO(libro));
-        }
-        return resultado;
+        // Toma solo el primer libro
+        DatosLibro primero = datosLibros.get(0);
+        Autor autor = autorService.buscarOCrearAutor(
+                primero.autores() != null && !primero.autores().isEmpty()
+                        ? primero.autores().get(0)
+                        : null
+        );
+        Libro libro = guardarLibroSiNoExiste(primero, autor);
+        // Devuelve solo ese en la lista de resultado
+        return List.of(toDTO(libro));
     }
 
     private List<DatosLibro> buscarLibrosEnApi(String busqueda) {
@@ -58,12 +61,16 @@ public class LibroService {
             return existente.get();
         }
         Libro libro = new Libro();
+        libro.setId(datosLibro.id());
         libro.setTitulo(datosLibro.titulo());
         libro.setAutor(autor);
         libro.setIdioma(datosLibro.idiomas() != null && !datosLibro.idiomas().isEmpty()
                 ? datosLibro.idiomas().get(0) : null);
         libro.setDescargas(datosLibro.descargas());
         libro.setTemas(datosLibro.temas() != null ? String.join(",", datosLibro.temas()) : null);
+        if (datosLibro.formats() != null) {
+            libro.setImagenUrl(datosLibro.formats().get("image/jpeg"));
+        }
         return libroRepository.save(libro);
     }
 
@@ -73,7 +80,8 @@ public class LibroService {
                 libro.getTitulo(),
                 libro.getAutor() != null ? libro.getAutor().getNombre() : null,
                 libro.getIdioma(),
-                libro.getDescargas()
+                libro.getDescargas(),
+                libro.getImagenUrl()
         );
     }
 

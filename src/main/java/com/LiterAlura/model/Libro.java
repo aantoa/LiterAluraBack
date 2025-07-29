@@ -17,9 +17,11 @@ public class Libro {
     private String temas;
     private String idioma;
     private Integer descargas;
+    private String imagenUrl;
 
     public Libro() {
     }
+
 
     public Long getId() {
         return id;
@@ -67,6 +69,14 @@ public class Libro {
 
     public void setDescargas(Integer descargas) {
         this.descargas = descargas;
+    }
+
+    public String getImagenUrl() {
+        return imagenUrl;
+    }
+
+    public void setImagenUrl(String imagenUrl) {
+        this.imagenUrl = imagenUrl;
     }
 
     @Override
